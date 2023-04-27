@@ -2,6 +2,7 @@ const express = require("express");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const { Task, List } = require("./mongodb.js");
 
 const app = express();
 
@@ -10,21 +11,6 @@ app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
-
-//! Connnecting Db by mongoose
-mongoose.connect("mongodb+srv://suraj-todolist:Suraj%401000@todolistcloud.coi9upv.mongodb.net/todolistDB", {
-  useNewUrlParser: true,
-});
-
-//creating mongoose schema
-const taskSchema = {
-  work: String,
-  status: String,
-};
-
-//creating mongoose model
-
-const Task = mongoose.model("Task", taskSchema);
 
 //Creating Document
 
@@ -40,40 +26,35 @@ const task2 = new Task({
 
 const defaultTask = [task1, task2];
 
-// Custom List Schema
-const customlistSchema = {
-  listTitle: String,
-  items: [taskSchema],
-};
-
-const List = mongoose.model("List", customlistSchema);
-
 app.get("/", (req, res) => {
-  Task.find({}, function (err, docs) {
-    let activetasks = docs.filter((a) => {
-      return a.status === "notchecked";
-    });
+  Task.find({},(err, docs) => {
+    if (!err) {
+      console.log(docs);
+      if (docs.length === 0) {
+          Task.insertMany(defaultTask,(err,docs)=>{
+            if(!err){
+              res.redirect("/");
+            }else{
+              console.log(err)
+            }
+          });
+      } else {
+        let activetasks = docs.filter((a) => {
+          return a.status === "notchecked";
+        });
 
-    let finishedtasks = docs.filter((a) => {
-      return a.status === "checked";
-    });
-
-    if (docs.length === 0) {
-      Task.insertMany(defaultTask, function (err) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("sucessfully inserted");
-        }
-      });
-      res.redirect("/");
+        let finishedtasks = docs.filter((a) => {
+          return a.status === "checked";
+        });
+        res.render("index", {
+          listTitle: "Today",
+          alltasks: docs,
+          activetasks: activetasks,
+          finishedtasks: finishedtasks,
+        });
+      }
     } else {
-      res.render("index", {
-        listTitle: "Today",
-        alltasks: docs,
-        activetasks: activetasks,
-        finishedtasks: finishedtasks,
-      });
+      console.log(err);
     }
   });
 });
