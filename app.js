@@ -2,7 +2,7 @@ const express = require("express");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const { Task, List } = require("./mongodb.js");
+const { Task, List, User } = require("./mongodb.js");
 
 const app = express();
 
@@ -27,18 +27,19 @@ const task2 = new Task({
 const defaultTask = [task1, task2];
 
 app.get("/", (req, res) => {
-  Task.find({},(err, docs) => {
+  Task.find({}, (err, docs) => {
     if (!err) {
       console.log(docs);
       if (docs.length === 0) {
-          Task.insertMany(defaultTask,(err,docs)=>{
-            if(!err){
-              res.redirect("/");
-            }else{
-              console.log(err)
-            }
-          });
+        Task.insertMany(defaultTask, (err, docs) => {
+          if (!err) {
+            res.redirect("/");
+          } else {
+            console.log(err);
+          }
+        });
       } else {
+        console.log(docs[0]._id);
         let activetasks = docs.filter((a) => {
           return a.status === "notchecked";
         });
@@ -96,6 +97,14 @@ app.get("/add/:id", (req, res) => {
   });
 });
 
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.get("/signup", (req, res) => {
+  res.render("signup");
+});
+
 app.post("/", (req, res) => {
   const listType = req.body.add;
 
@@ -113,6 +122,8 @@ app.post("/", (req, res) => {
         docs.items.push(newtask);
         docs.save();
         res.redirect("/add/" + listType);
+      } else {
+        console.log(err);
       }
     });
   }
@@ -152,6 +163,44 @@ app.post("/delete", (req, res) => {
       }
     });
   }
+});
+
+app.post("/login", (req, res) => {
+  let email = req.body.loginEmail;
+  let password = req.body.loginPassword;
+  User.find({ email: email }, (err, docs) => {
+    if (!err) {
+      if (docs.length === 0) {
+        res.redirect("/signup");
+      }else{
+        console.log("user found")
+      }
+    } else {
+      console.log(err);
+    }
+  });
+});
+app.post("/signup", (req, res) => {
+  let fullName = req.body.fullName;
+  let email = req.body.userEmail;
+  let password = req.body.userPassword;
+  User.find({ email: email }, async (err, docs) => {
+    if (!err) {
+      if (docs.length===0) {
+        const newuser = new User({
+          name: fullName,
+          email: email,
+          password: password
+        });
+        await newuser.save();
+        res.redirect("/login");
+      } else {
+        res.redirect("/login")
+      }
+    } else {
+      console.log(err);
+    }
+  });
 });
 
 app.listen(3003, () => {

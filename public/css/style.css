@@ -1,10 +1,26 @@
-.gradient-custom {
+body{
   background: radial-gradient(50% 123.47% at 50% 50%, #00ff94 0%, #720059 100%),
     linear-gradient(121.28deg, #669600 0%, #ff0000 100%),
     linear-gradient(360deg, #0029ff 0%, #8fff00 100%),
     radial-gradient(100% 164.72% at 100% 100%, #6100ff 0%, #00ff57 100%),
     radial-gradient(100% 148.07% at 0% 0%, #fff500 0%, #51d500 100%);
   background-blend-mode: screen, color-dodge, overlay, difference, normal;
+  background-repeat:no-repeat;
+  height: 100vh;
+}
+nav .loginImage{
+  width: 36px;
+  height: 36px;
+}
+nav .brand,nav .nav-item a{
+  font-family: "Unbounded", cursive;
+  color: white;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+/* JUST FOR TESTING SOME CSS */
+.test{
+  border: 2px solid black;
 }
 .list-title {
   text-transform: uppercase;
@@ -34,37 +50,4 @@ input + p {
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
-}
-
-.button span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.5s;
-}
-
-.button span:after {
-  content: "\00bb";
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.5s;
-}
-
-.button:hover span {
-  padding-right: 25px;
-}
-
-.button:hover span:after {
-  opacity: 1;
-  right: 0;
-}
-
-.button_navigation {
-  text-decoration: none;
-  color: rgb(255, 255, 255);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: normal;
 }

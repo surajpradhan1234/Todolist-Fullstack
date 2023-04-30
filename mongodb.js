@@ -13,13 +13,13 @@ mongoose
     console.log(err);
   });
 
-// const userSchema = mongoose.Schema({
-//   name: String,
-//   email: String,
-//   password: String,
-// });
+const userSchema = mongoose.Schema({
+  name: String,
+  email: String,
+  password: String,
+});
 
-// const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 // module.exports = User;
 
@@ -41,5 +41,6 @@ const List = mongoose.model("List", customlistSchema);
 
 module.exports ={
     Task:Task,
-    List:List
+    List:List,
+    User:User
 };
