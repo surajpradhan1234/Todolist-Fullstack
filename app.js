@@ -1,7 +1,6 @@
 const express = require("express");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
 const { Task, List, User } = require("./mongodb.js");
 
 const app = express();
@@ -201,6 +200,18 @@ app.post("/signup", (req, res) => {
       console.log(err);
     }
   });
+});
+
+// for apiTesting only
+
+app.get("/apitest",(req,res)=>{
+  User.findOne({name:"Organiser"},async (err,docs)=>{
+   if(!err){
+    console.log(docs);
+   }else{
+    console.log(err);
+   }
+  })
 });
 
 app.listen(3003, () => {

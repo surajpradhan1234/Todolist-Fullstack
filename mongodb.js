@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const encrypt = require('mongoose-encryption');
 
 mongoose.set("strictQuery", false);
 
@@ -13,11 +14,15 @@ mongoose
     console.log(err);
   });
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   password: String,
 });
+
+const secret="This is a secret";
+
+userSchema.plugin(encrypt,{secret:secret,encryptedFields:["password"]});
 
 const User = mongoose.model("User", userSchema);
 
